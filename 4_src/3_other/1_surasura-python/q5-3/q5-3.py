@@ -1,0 +1,7 @@
+alpha_num_dict = {
+    'a':1,
+    'b':2,
+    'c':3
+}
+
+print(alpha_num_dict)
