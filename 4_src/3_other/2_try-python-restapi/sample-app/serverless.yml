@@ -3,13 +3,55 @@ service: sample-app # NOTE: update this with your service name
 provider:
   name: aws
   runtime: python3.7
+  environment:
+    # DYNAMODB_TABLE: ${self:service}-${opt:stage, self:provider.stage}
+    DYNAMODB_TABLE: sampletodoapp
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
+        
   stage: dev
   region: ap-northeast-1
 
+resource:
+  Resources:
+    TodosDynamoDbTable:
+      Type: 'AWS::DynamoDB::Table'
+      DeletionPolicy: Retain
+      Properties:
+        AttributeDefinisions:
+          -
+            AttributeName : id
+            AttributeType: S
+        KeySchema:
+          -
+            AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCaoacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${self:provider.environment.DYNAMODM_TABLE}
+
+
 functions:
-  infoRead:
-    handler: handler.infoRead
+  create:
+    handler: todos/create.create
     events:
       - http:
-          path: info/read
+          path: todos
+          method: post
+          cors: true
+  get:
+    handler: todos/get.get
+    events:
+      - http:
+          path: todos/{id}
           method: get
+          cors: true
