@@ -72,4 +72,11 @@ functions:
           path: todos/{id}
           method: put
           cors: true
-    
+
+  delete:
+    handler: todos/delete.delete
+    events:
+      - http:
+          path: todos/{id}
+          method: delete
+          cors: true
