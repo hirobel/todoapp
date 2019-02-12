@@ -1,0 +1,82 @@
+service: sample-app # NOTE: update this with your service name
+
+provider:
+  name: aws
+  runtime: python3.7
+  environment:
+    # DYNAMODB_TABLE: ${self:service}-${opt:stage, self:provider.stage}
+    DYNAMODB_TABLE: sampletodoapp
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:provider.environment.DYNAMODB_TABLE}"
+        
+  stage: dev
+  region: ap-northeast-1
+
+resource:
+  Resources:
+    TodosDynamoDbTable:
+      Type: 'AWS::DynamoDB::Table'
+      DeletionPolicy: Retain
+      Properties:
+        AttributeDefinisions:
+          -
+            AttributeName : id
+            AttributeType: S
+        KeySchema:
+          -
+            AttributeName: id
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCaoacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${self:provider.environment.DYNAMODM_TABLE}
+
+
+functions:
+  create:
+    handler: todos/create.create
+    events:
+      - http:
+          path: todos
+          method: post
+          cors: true
+
+  list:
+    handler: todos/list.list
+    events:
+      - http:
+          path: todos
+          method: get
+          cors: true
+
+  get:
+    handler: todos/get.get
+    events:
+      - http:
+          path: todos/{id}
+          method: get
+          cors: true
+
+  update:
+    handler: todos/update.update
+    events:
+      - http:
+          path: todos/{id}
+          method: put
+          cors: true
+
+  delete:
+    handler: todos/delete.delete
+    events:
+      - http:
+          path: todos/{id}
+          method: delete
+          cors: true
