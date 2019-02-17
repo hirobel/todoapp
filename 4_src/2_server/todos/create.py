@@ -1,8 +1,4 @@
-#!/usr/bin/env python
-# coding: utf-8
-
 import json
-import logging
 import os
 import uuid
 import boto3
@@ -15,11 +11,11 @@ def validateInput(data, required_keys=[]):
     }
     for k in required_keys:
         if k not in data:
-            error['code'] = 1000,
+            error['code'] = 1000
             error['text'] = 'Required parameter does not exist'
             error['isError'] = True
         elif not data[k]:
-            error['code'] = 1001,
+            error['code'] = 1001
             error['text'] = 'Required parameter value is invalid'
             error['isError'] = True
     return error
@@ -30,8 +26,7 @@ def create(event, context):
     table = dynamodb.Table(os.environ['DYNAMODB_TABLE'])
     data = json.loads(event['body'])
 
-    error = validateInput(data)
-
+    error = validateInput(data, required_keys=['title', 'content', 'due_date', 'status'])
     if error['isError']:
         body = {
             'Result': 'failed',

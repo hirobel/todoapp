@@ -15,7 +15,7 @@ Amplify.configure({
     endpoints: [
       {
         name: 'cognito-tutorial-api',
-        endpoint: 'https://zm7ajk3pk4.execute-api.ap-northeast-1.amazonaws.com/'
+        endpoint: 'https://zm7ajk3pk4.execute-api.ap-northeast-1.amazonaws.com'
       }
     ]
   }

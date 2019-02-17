@@ -30,6 +30,9 @@ functions:
           path: todos
           method: post
           cors: true
+          authorizer:
+            name: todoappIdpool
+            arn: arn:aws:cognito-idp:ap-northeast-1:670854711805:userpool/ap-northeast-1_OGmKWZnB5
 
   list:
     handler: todos/list.list
@@ -38,7 +41,6 @@ functions:
           path: todos
           method: get
           cors: true
-          integration: lambda
           authorizer:
             name: todoappIdpool
             arn: arn:aws:cognito-idp:ap-northeast-1:670854711805:userpool/ap-northeast-1_OGmKWZnB5
@@ -50,6 +52,9 @@ functions:
           path: todos/{id}
           method: delete
           cors: true
+          authorizer:
+            name: todoappIdpool
+            arn: arn:aws:cognito-idp:ap-northeast-1:670854711805:userpool/ap-northeast-1_OGmKWZnB5
 
   update:
     handler: todos/update.update
@@ -58,3 +63,6 @@ functions:
           path: todos/{id}
           method: put
           cors: true          
+          authorizer:
+            name: todoappIdpool
+            arn: arn:aws:cognito-idp:ap-northeast-1:670854711805:userpool/ap-northeast-1_OGmKWZnB5
