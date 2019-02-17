@@ -1,44 +1,65 @@
+#!/usr/bin/env python
+# coding: utf-8
+
 import json
 import logging
 import os
-import time
 import uuid
-
 import boto3
-dynamodb = boto3.resource('dynamodb')
+
+def validateInput(data, required_keys=[]):
+    error = {
+        'isError':False,
+        'code': '',
+        'text': '',
+    }
+    for k in required_keys:
+        if k not in data:
+            error['code'] = 1000,
+            error['text'] = 'Required parameter does not exist'
+            error['isError'] = True
+        elif not data[k]:
+            error['code'] = 1001,
+            error['text'] = 'Required parameter value is invalid'
+            error['isError'] = True
+    return error
+
 
 def create(event, context):
-    data = json.loads(event['body'])
-    if 'title' not in data:
-        logging.error("Validation Failed")
-        raise Exception("Couldn't create the todo item.")
-        return
-
-    timestamp = int(time.time() * 1000)
-
+    dynamodb = boto3.resource('dynamodb')
     table = dynamodb.Table(os.environ['DYNAMODB_TABLE'])
+    data = json.loads(event['body'])
 
-    # item = {
-    #     'id': str(uuid.uuid1()),
-    #     'text': data['text'],
-    #     "checked": False,
-    #     'createdAt': timestamp,
-    #     'updatedAt': timestamp,
-    # }
+    error = validateInput(data)
 
-    item = {
-        'id': str(uuid.uuid1()),
-        'title': data['title'],
-        "content": data['content'],
-        'due_date': data['due_date'],
-        'status': data['status'],
-    }
-
-    table.put_item(Item=item)
-
-    response = {
-        "statusCode" : 200,
-        "body" : json.dumps(item)
-    }
-
-    return response
+    if error['isError']:
+        body = {
+            'Result': 'failed',
+            'Errors': []
+        }
+        body['Errors'] = error
+        response = {
+            "statusCode" : 400,
+            "body" : json.dumps(body),
+        }
+        return response
+    else:
+        item = {
+            'id': str(uuid.uuid1()),
+            'title': data['title'],
+            "content": data['content'],
+            'due_date': data['due_date'],
+            'status': data['status'],
+        }
+        body = {
+            'Result': 'success',
+            'Errors': [],
+            'Data': {}
+        }
+        body['Data'] = item
+        table.put_item(Item=item)
+        response = {
+            "statusCode" : 200,
+            "body" : json.dumps(body)
+        }
+        return response
