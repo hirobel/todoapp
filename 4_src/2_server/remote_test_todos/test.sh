@@ -40,6 +40,19 @@ curl -X POST \
       }' \
 > result/create-testValidateInput3.json
 
+curl -X POST \
+  https://zm7ajk3pk4.execute-api.ap-northeast-1.amazonaws.com/dev/todos \
+  -H "Authorization: $1" \
+  -H 'Content-Type: application/json' \
+  -H 'cache-control: no-cache' \
+  -d '{ 
+            "title": "",
+            "content": "Test Content",
+            "due_date": 1550288140777,
+            "status": "new"
+      }' \
+> result/create-testValidateInput4.json
+
 ###############
 # Test > Update
 ###############
@@ -57,6 +70,19 @@ curl -X PUT \
             "status": "New"
       }' \
 > result/update-testValidateInput2.json
+
+curl -X PUT \
+  "https://zm7ajk3pk4.execute-api.ap-northeast-1.amazonaws.com/dev/todos/$targetid" \
+  -H "Authorization: $1" \
+  -H 'Content-Type: application/json' \
+  -H 'cache-control: no-cache' \
+  -d '{
+            "title": "Test Title Modified2",
+            "content": "Test Content",
+            "due_date": 1550288140777,
+            "status": "new"
+      }' \
+> result/update-testValidateInput3.json
 
 curl -X PUT \
   "https://zm7ajk3pk4.execute-api.ap-northeast-1.amazonaws.com/dev/todos/$targetid" \

@@ -1,1 +1,1 @@
-{"Result": "failed", "Errors": {"isError": true, "code": 1000, "text": "Required parameter does not exist"}}
+{"message":"The incoming token has expired"}

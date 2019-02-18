@@ -1,5 +1,4 @@
 import json
-import logging
 import os
 import boto3
 import decimal
@@ -28,6 +27,10 @@ def validateInput(data, required_keys=[]):
             error['code'] = 1001
             error['text'] = 'Required parameter value is invalid'
             error['isError'] = True
+    if data.get('status')!='New' and data.get('status')!='WIP' and data.get('status')!='Done' and data.get('status')!='Pending':
+        error['code'] = 1002
+        error['text'] = 'status value is invalid'
+        error['isError'] = True
     return error
 
 def update(event, context):
@@ -80,9 +83,4 @@ def update(event, context):
             "body": json.dumps(body,
                                cls=DecimalEncoder)
         }
-        # response = {
-        #     "statusCode": 200,
-        #     "body": json.dumps(result['Attributes'],
-        #                        cls=DecimalEncoder)
-        # }
         return response
