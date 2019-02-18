@@ -28,18 +28,6 @@ def delete(event, context):
 
     error = validateInput(data, required_keys=['id'])
 
-    # table.delete_item(
-    #     Key={
-    #         'id': event['pathParameters']['id']
-    #     }
-    # )
-
-    # response = {
-    #     "statusCode" : 200
-    # }
-
-    # return response
-
     if error['isError']:
         body = {
             'Result': 'failed',
@@ -58,6 +46,6 @@ def delete(event, context):
             }
         )
         response = {
-            "statusCode" : 200
+            "statusCode" : 204
         }
         return response

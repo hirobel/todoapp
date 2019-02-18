@@ -40,8 +40,6 @@ curl -X POST \
       }' \
 > result/create-testValidateInput3.json
 
-
-
 ###############
 # Test > Update
 ###############
@@ -73,7 +71,6 @@ curl -X PUT \
       }' \
 > result/update-testValidateInput1.json
 
-
 ###############
 # Test > Delete
 ###############
@@ -103,3 +100,4 @@ curl -X GET \
   -H 'Content-Type: application/json' \
   -H 'cache-control: no-cache' \
 > result/read-testValidateInput1.json
+

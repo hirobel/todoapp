@@ -29,35 +29,6 @@ def update(event, context):
 
     error = validateInput(data, required_keys=['id','title', 'content', 'due_date', 'status'])
 
-    # result = table.update_item(
-    #     Key = {
-    #         'id': event['pathParameters']['id']
-    #     },
-    #     ExpressionAttributeNames={
-    #         '#todo_title': 'title',
-    #         '#todo_status': 'status',
-    #     },
-    #     ExpressionAttributeValues={
-    #         ':title': data['title'],
-    #         ':content': data['content'],
-    #         ':status': data['status'],
-    #         ':due_date': data['due_date'],
-    #     },
-    #     UpdateExpression='SET #todo_title = :title, '
-    #                      ' #todo_status = :status, '
-    #                      'content = :content, '
-    #                      'due_date = :due_date',
-    #     ReturnValues='UPDATED_NEW'
-    # )
-
-    # response = {
-    #     "statusCode": 200,
-    #     "body": json.dumps(result['Attributes'],
-    #                        cls=decimalencoder.DecimalEncoder)
-    # }
-
-    # return response
-
     if error['isError']:
         body = {
             'Result': 'failed',
