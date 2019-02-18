@@ -18,8 +18,11 @@ def validateInput(data, required_keys=[]):
             error['code'] = 1001
             error['text'] = 'Required parameter value is invalid'
             error['isError'] = True
+    if data.get('status')!='New' and data.get('status')!='WIP' and data.get('status')!='Done' and data.get('status')!='Pending':
+        error['code'] = 1002
+        error['text'] = 'status value is invalid'
+        error['isError'] = True
     return error
-
 
 def create(event, context):
     dynamodb = boto3.resource('dynamodb')

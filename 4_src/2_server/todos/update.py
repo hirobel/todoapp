@@ -1,8 +1,17 @@
 import json
 import logging
 import os
-from todos import decimalencoder
 import boto3
+import decimal
+
+class DecimalEncoder(json.JSONEncoder):
+    def default(self, o):
+        if isinstance(o, decimal.Decimal):
+            if abs(o) % 1 > 0:
+                return float(o)
+            else:
+                return int(o)
+        return super(DecimalEncoder, self).default(o)
 
 def validateInput(data, required_keys=[]):
     error = {
@@ -26,7 +35,6 @@ def update(event, context):
     table = dynamodb.Table(os.environ['DYNAMODB_TABLE'])
     data = json.loads(event['body'])
     data.update(id=event['pathParameters']['id'])
-
     error = validateInput(data, required_keys=['id','title', 'content', 'due_date', 'status'])
 
     if error['isError']:
@@ -41,6 +49,11 @@ def update(event, context):
         }
         return response
     else:
+        body = {
+            'Result': 'success',
+            'Errors': [],
+            'Data': {}
+        }
         result = table.update_item(
             Key = {
                 'id': event['pathParameters']['id']
@@ -61,9 +74,15 @@ def update(event, context):
                              'due_date = :due_date',
             ReturnValues='UPDATED_NEW'
         )
-
+        body['Data'] = result['Attributes']
         response = {
             "statusCode": 200,
-            "body": json.dumps(result['Attributes'],
-                               cls=decimalencoder.DecimalEncoder)
+            "body": json.dumps(body,
+                               cls=DecimalEncoder)
         }
+        # response = {
+        #     "statusCode": 200,
+        #     "body": json.dumps(result['Attributes'],
+        #                        cls=DecimalEncoder)
+        # }
+        return response
