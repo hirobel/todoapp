@@ -1,5 +1,8 @@
 # todoapp
 
+## 背景
+pythonでtodoアプリを作成するサンプルです。
+
 ## 構成図
 https://gyazo.com/df688155647b4f380449dda09a63f269
 
